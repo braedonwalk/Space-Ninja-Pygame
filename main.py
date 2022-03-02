@@ -6,6 +6,7 @@ import cv2
 import pygame
 
 from HandDetector import HandDetector
+from Fruit import Fruit
 
 ################
 # GLOBAL THINGS
@@ -38,6 +39,9 @@ def main():
     # keeps track if pygame should keep running
     pygameIsRunning = True
 
+    #chosen hand point
+    handPoint = 19  #THE FIRST JOINT ON THE PINKIE
+
     # cursor vars
     cursorX = 0
     cursorY = 0
@@ -51,6 +55,10 @@ def main():
     aRect = pygame.Rect(300, 300, 400, 200)
     rectColor = (255,0,255)
 
+    #test fruit object
+    aFruit = Fruit(WIDTH/2, HEIGHT/2)
+    aFruitRect = pygame.Rect(300, 300, 400, 200)
+
     # while the opencv window is running and pygame screen is up
     while not handDetector.shouldClose and pygameIsRunning:
         # update the webcam feed and hand tracker calculations
@@ -60,48 +68,43 @@ def main():
         WINDOW.fill(0)
         
         #display rectangle on screen
-        pygame.draw.rect(WINDOW, rectColor, aRect)
+        # pygame.draw.rect(WINDOW, rectColor, aRect)
+
+        #display test Fruit
+        aFruit.render(WINDOW)
+        pygame.draw.rect(WINDOW, rectColor, aFruitRect)
+
 
         # if there is at least one hand seen, then
         # do all this code
         if len(handDetector.landmarkDictionary) > 0:
             # print(handDetector.landmarkDictionary[0])
             # [first hand][hand point][x coordinate]
-            cursorX = (handDetector.landmarkDictionary[0][9][0])
+            cursorX = (handDetector.landmarkDictionary[0][handPoint][0])
             # [first hand][hand point][y coordinate]
-            cursorY = (handDetector.landmarkDictionary[0][9][1])
+            cursorY = (handDetector.landmarkDictionary[0][handPoint][1])
             # [first hand][hand point][z coordinate]
-            cursorZ = (handDetector.landmarkDictionary[0][9][2])
+            cursorZ = (handDetector.landmarkDictionary[0][handPoint][2])
 
             # mirror cursorX so it is not confusing
-            cursorX = WIDTH - mapToNewRange(cursorX, 0, 640, 0, WIDTH)
+            cursorX = WIDTH - mapToNewRange(cursorX, 0, handDetector.width, 0, WIDTH)
             # map cursorY to pygame window size
-            cursorY = mapToNewRange(cursorY, 0, 480, 0, HEIGHT)
+            cursorY = mapToNewRange(cursorY, 0, handDetector.height, 0, HEIGHT)
 
             ######################
-            # Track whether the hand is open or closed
+            # Track collision between hand point and fruit
             ######################
-            if handDetector.landmarkDictionary[0][12][1] < handDetector.landmarkDictionary[0][9][1]:
-                handIsOpen = True
-                cursorColor = (0, 255, 255)
-            else:
-                handIsOpen = False
-                cursorColor = (255, 120, 0)
 
             #check collison between rectangle and hand point
-            if aRect.collidepoint(cursorX, cursorY):
+            if aFruitRect.collidepoint(cursorX, cursorY):
                 rectColor = (255,0,0)
             else:
                 rectColor = (255,0,255)
 
-            #check collision and closed hand
-            if aRect.collidepoint(cursorX, cursorY) and not handIsOpen:
-                rectColor = (0,0,255)
-
-            # draw circle at point 9
+            # draw circle at hand point 
             pygame.draw.circle(WINDOW, cursorColor, (cursorX, cursorY), 50)
 
-            print(handIsOpen)
+            # print(handIsOpen)
 
         # for all the game events
         for event in pygame.event.get():

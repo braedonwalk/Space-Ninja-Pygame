@@ -11,6 +11,10 @@ import pygame
 
 class HandDetector:
 
+    #size of webcam window
+    width = 640
+    height = 480
+
     def __init__(self, a_max_num_hands=1, a_min_detection_confidence=0.5) -> None:
         """Constuctor
 
@@ -18,12 +22,13 @@ class HandDetector:
             a_max_num_hands (int, optional): Number of hands the detector will detect at once. Defaults to 1.
             a_min_detection_confidence (float, optional): min confidence that must be achieved for algorithm to claim it sees a hand. Defaults to 0.5.
         """
+
         # load the video from the webcam
         self.capture = cv2.VideoCapture(0)
 
         #### setting parameters for the webcam capture
-        self.capture.set(3, 640) # the width of the window
-        self.capture.set(4, 480) # height of the window
+        self.capture.set(3, self.width) # the width of the window
+        self.capture.set(4, self.height) # height of the window
 
         # getting hand identification models
         self.mpHands = mp.solutions.hands
