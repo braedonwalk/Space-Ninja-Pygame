@@ -17,21 +17,19 @@ HEIGHT = 800
 # make the game window object
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 # name the game window
-pygame.display.set_caption("Best game")
+pygame.display.set_caption("Fruit Ninja")
 
 ################
-# Funciton defs
+# Function defs
 ################
+
 # flips the screen to make more sense
-
-
 def mapToNewRange(val, inputMin, inputMax, outputMin, outputMax):
     return outputMin + ((outputMax - outputMin) / (inputMax - inputMin)) * (val - inputMin)
 
 #########
 # main function
 #########
-
 
 def main():
     # make a hand detector
@@ -60,9 +58,7 @@ def main():
 
         # fill the background
         WINDOW.fill(0)
-
         
-
         #display rectangle on screen
         pygame.draw.rect(WINDOW, rectColor, aRect)
 
@@ -97,6 +93,10 @@ def main():
                 rectColor = (255,0,0)
             else:
                 rectColor = (255,0,255)
+
+            #check collision and closed hand
+            if aRect.collidepoint(cursorX, cursorY) and not handIsOpen:
+                rectColor = (0,0,255)
 
             # draw circle at point 9
             pygame.draw.circle(WINDOW, cursorColor, (cursorX, cursorY), 50)
