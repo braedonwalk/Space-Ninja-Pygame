@@ -21,4 +21,4 @@ class Fruit:
 
     def move(self):
         self.y += self.speed #move fruit down one pixel every frame
-        print(self.fruitRect)
+        # print(self.fruitRect)

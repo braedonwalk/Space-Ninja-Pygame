@@ -20,7 +20,7 @@ WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 # name the game window
 pygame.display.set_caption("Fruit Ninja")
 
-#fruit List
+#fruit list
 fruitList = []
 fruitList.append(Fruit(WIDTH/2, 0))
 
@@ -37,6 +37,9 @@ def mapToNewRange(val, inputMin, inputMax, outputMin, outputMax):
 #########
 
 def main():
+    #use fruitList called from beginning of sketch
+    global fruitList
+
     # make a hand detector
     handDetector = HandDetector()
 
@@ -57,7 +60,7 @@ def main():
     fruitColor = (255,0,255)
 
     #test fruit object
-    aFruit = Fruit(WIDTH/2, 0)  #draw fruit rectangle at top of screen center 
+    # aFruit = Fruit(WIDTH/2, 0)  #draw fruit rectangle at top of screen center 
     # aFruitRect = pygame.Rect(300, 300, 400, 200)
 
     # while the opencv window is running and pygame screen is up
@@ -70,8 +73,12 @@ def main():
         # fill the background
         WINDOW.fill(0)
         #display test Fruit
-        aFruit.render(fruitColor, WINDOW)
+        # aFruit.render(fruitColor, WINDOW)
         # print("rendering")
+
+        #render all fruit in fruitList
+        for aFruit in fruitList:
+            aFruit.render(fruitColor, WINDOW)
         
         #move the fruit down the screen
         aFruit.move()
