@@ -23,6 +23,7 @@ pygame.display.set_caption("Fruit Ninja")
 #fruit list
 fruitList = []
 fruitList.append(Fruit(WIDTH/2, 0))
+cutFruitList = []   #for fruit that has been cut
 
 ################
 # Function defs
@@ -37,8 +38,9 @@ def mapToNewRange(val, inputMin, inputMax, outputMin, outputMax):
 #########
 
 def main():
-    #use fruitList called from beginning of sketch
+    #use lists called from beginning of sketch
     global fruitList
+    global cutFruitList
 
     # make a hand detector
     handDetector = HandDetector()
@@ -47,7 +49,8 @@ def main():
     pygameIsRunning = True
 
     #chosen hand point
-    handPoint = 19  #THE FIRST JOINT ON THE PINKIE
+    handPoint = 8  #THE TIP OF POINTER FINGER
+    # handPoint = 19  #THE FIRST JOINT OF PINKIE
 
     # cursor vars
     cursorX = 0
@@ -58,30 +61,40 @@ def main():
 
     #fruit vars
     fruitColor = (255,0,255)
+    cutFruitColor = (0,0,255)
+
+    #health
+    health = 3
 
     #test fruit object
     # aFruit = Fruit(WIDTH/2, 0)  #draw fruit rectangle at top of screen center 
-    # aFruitRect = pygame.Rect(300, 300, 400, 200)
 
     # while the opencv window is running and pygame screen is up
     while not handDetector.shouldClose and pygameIsRunning:
         # update the webcam feed and hand tracker calculations
         handDetector.update()
-        
-        # pygame.draw.rect(WINDOW, rectColor, aFruitRect)   #test rectangle
-        
-        # fill the background
+                
+        # fill the background with black
         WINDOW.fill(0)
-        #display test Fruit
-        # aFruit.render(fruitColor, WINDOW)
-        # print("rendering")
 
-        #render all fruit in fruitList
+
+        #FOR ALL CUT FRUIT
+        for aCutFruit in cutFruitList:
+            aCutFruit.render(cutFruitColor, WINDOW) #SHOW CUT FRUIT ON SCREEN
+            aCutFruit.move()                        #MOVE CUT FRUIT
+
+        #FOR ALL UNCUT FRUIT
         for aFruit in fruitList:
-            aFruit.render(fruitColor, WINDOW)
+            aFruit.render(fruitColor, WINDOW)       #SHOW UNCUT FRUIT ON SCREEN 
+            aFruit.move()                           #MOVE UNCUT FRUIT
+            if aFruit.isCut == True:                #if the fruit has been cut
+                cutFruitList.append(aFruit)         #add fruit to the cutFruit list
+                fruitList.remove(aFruit)            #remove the cut fruit from the uncut fruit list
+                fruitList.append(Fruit(WIDTH/2, 0))    #this is a test
+                # print(cutFruitList)
+            if aFruit.y > HEIGHT:
+                fruitList.remove(aFruit)
         
-        #move the fruit down the screen
-        aFruit.move()
 
         # if there is at least one hand seen, then
         # do all this code
@@ -102,15 +115,14 @@ def main():
             ######################
             # Track collision between hand point and fruit
             ######################
-
-            #check collison between rectangle and hand point
-            if aFruit.fruitRect.collidepoint(cursorX, cursorY):
-                fruitColor = (255,0,0)
-            else:
-                fruitColor = (255,0,255)
-
             # draw circle at hand point 
             pygame.draw.circle(WINDOW, cursorColor, (cursorX, cursorY), cursorRadius)
+            
+            #check collison between rectangle and hand point
+            if aFruit.fruitRect.collidepoint(cursorX, cursorY):
+                aFruit.isCut = True
+            else:
+                fruitColor = (255,0,255)
 
 
         # for all the game events
