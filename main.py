@@ -19,10 +19,20 @@ WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 # name the game window
 pygame.display.set_caption("Produce Slicer")
 
+#initialize all fonts
+pygame.font.init()
+
 #fruit list
 fruitList = []
 fruitList.append(Fruit(WIDTH/2, 0))     #INITIAL FRUIT AT START *FOR TESING*
 cutFruitList = []   #for fruit that has been cut
+
+#health
+health = 3
+healthColor = (255,0,0) #red
+healthFont = pygame.font.SysFont("Helvetica", 40)
+healthObject = healthFont.render(str(health), True, healthColor)
+
 
 ################
 # Function defs
@@ -37,9 +47,11 @@ def mapToNewRange(val, inputMin, inputMax, outputMin, outputMax):
 #########
 
 def main():
-    #use lists called from beginning of sketch
+    #use variables called from beginning of sketch
     global fruitList
     global cutFruitList
+    global health
+    global healthObject
 
     # make a hand detector
     handDetector = HandDetector()
@@ -62,9 +74,6 @@ def main():
     fruitColor = (255,0,255)    #pink
     cutFruitColor = (0,0,255)   #blue
 
-    #health
-    health = 3
-
     #test fruit object
     # aFruit = Fruit(WIDTH/2, 0)  #draw fruit rectangle at top of screen center 
 
@@ -75,6 +84,9 @@ def main():
                 
         # fill the background with black
         WINDOW.fill(0)
+
+        #display health
+        WINDOW.blit(healthObject, (0, 0))
 
 
         #FOR ALL CUT FRUIT
@@ -89,11 +101,13 @@ def main():
             if aFruit.isCut == True:                #if the fruit has been cut
                 cutFruitList.append(aFruit)         #add fruit to the cutFruit list
                 fruitList.remove(aFruit)            #remove the cut fruit from the uncut fruit list
+                healthObject = healthFont.render(str(health), True, healthColor)    #display new health
                 fruitList.append(Fruit(WIDTH, random.randrange(0,HEIGHT/2)))    #this is a test
                 # print(cutFruitList)
             if aFruit.y > HEIGHT:                   #if uncut fruit falls below the screen
                 fruitList.remove(aFruit)            #remove from list
                 health -= 1                         #remove one life
+                healthObject = healthFont.render(str(health), True, healthColor)    #display new health
                 fruitList.append(Fruit(WIDTH, random.randrange(0,HEIGHT/2)))    #this is a test
         
 
