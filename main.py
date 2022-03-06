@@ -2,8 +2,7 @@
 # imports
 #############
 
-import cv2
-import pygame
+import cv2, pygame, random
 
 from HandDetector import HandDetector
 from Fruit import Fruit
@@ -18,11 +17,11 @@ HEIGHT = 800
 # make the game window object
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 # name the game window
-pygame.display.set_caption("Fruit Ninja")
+pygame.display.set_caption("Produce Slicer")
 
 #fruit list
 fruitList = []
-fruitList.append(Fruit(WIDTH/2, 0))
+fruitList.append(Fruit(WIDTH/2, 0))     #INITIAL FRUIT AT START *FOR TESING*
 cutFruitList = []   #for fruit that has been cut
 
 ################
@@ -56,12 +55,12 @@ def main():
     cursorX = 0
     cursorY = 0
     cursorZ = 0
-    cursorColor = (255, 120, 0)
+    cursorColor = (255, 120, 0) #orange
     cursorRadius = 25
 
     #fruit vars
-    fruitColor = (255,0,255)
-    cutFruitColor = (0,0,255)
+    fruitColor = (255,0,255)    #pink
+    cutFruitColor = (0,0,255)   #blue
 
     #health
     health = 3
@@ -90,10 +89,12 @@ def main():
             if aFruit.isCut == True:                #if the fruit has been cut
                 cutFruitList.append(aFruit)         #add fruit to the cutFruit list
                 fruitList.remove(aFruit)            #remove the cut fruit from the uncut fruit list
-                fruitList.append(Fruit(WIDTH/2, 0))    #this is a test
+                fruitList.append(Fruit(random.randrange(0,WIDTH-aFruit.size), 0))    #this is a test
                 # print(cutFruitList)
-            if aFruit.y > HEIGHT:
-                fruitList.remove(aFruit)
+            if aFruit.y > HEIGHT:                   #if uncut fruit falls below the screen
+                fruitList.remove(aFruit)            #remove from list
+                health -= 1                         #remove one life
+                fruitList.append(Fruit(random.randrange(0,WIDTH-aFruit.size), 0))    #this is a test
         
 
         # if there is at least one hand seen, then
