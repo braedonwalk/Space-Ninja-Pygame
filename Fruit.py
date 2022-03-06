@@ -7,8 +7,8 @@ class Fruit:
     # CLASS VARS
     size = 70
     mass = 0.4
-    xVel = 5
-    yVel = 5
+    xVel = 10
+    yVel = -10    #test moving upwards for a little bit
     xAccel = 0  #no acceleration on x axis for now
     yAccel = 0  
     isCut = False
@@ -24,6 +24,8 @@ class Fruit:
         # pygame.draw.circle(_window, _color, (self.x, self.y), self.size)
 
     def move(self):
-        self.yAccel += self.mass    #gravity pulls downward on y axis
-        self.y += self.yAccel      #move fruit down at the rate of acceleration
+        self.yAccel = self.mass    #set acceleration equal to mass
+        self.yVel += self.yAccel    #increase velocity at rate of acceleration
+        self.y += self.yVel      #move fruit down at the rate of velocity
+        self.x -= self.xVel      #move fruit down at the rate of acceleration
         # print(self.fruitRect)

@@ -89,12 +89,12 @@ def main():
             if aFruit.isCut == True:                #if the fruit has been cut
                 cutFruitList.append(aFruit)         #add fruit to the cutFruit list
                 fruitList.remove(aFruit)            #remove the cut fruit from the uncut fruit list
-                fruitList.append(Fruit(random.randrange(0,WIDTH-aFruit.size), 0))    #this is a test
+                fruitList.append(Fruit(WIDTH, random.randrange(0,HEIGHT/2)))    #this is a test
                 # print(cutFruitList)
             if aFruit.y > HEIGHT:                   #if uncut fruit falls below the screen
                 fruitList.remove(aFruit)            #remove from list
                 health -= 1                         #remove one life
-                fruitList.append(Fruit(random.randrange(0,WIDTH-aFruit.size), 0))    #this is a test
+                fruitList.append(Fruit(WIDTH, random.randrange(0,HEIGHT/2)))    #this is a test
         
 
         # if there is at least one hand seen, then
