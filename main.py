@@ -2,10 +2,10 @@
 # imports
 #############
 
-import cv2, pygame, random
+import cv2, pygame, random, math
 
 from HandDetector import HandDetector
-from Fruit import Fruit
+from Fruit import Fruit, CircleFruit
 
 ################
 # GLOBAL THINGS
@@ -18,13 +18,15 @@ HEIGHT = 800
 WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 # name the game window
 pygame.display.set_caption("Produce Slicer")
+#frame rate
+FPS = 60
 
 #initialize all fonts
 pygame.font.init()
 
 #fruit list
 fruitList = []
-fruitList.append(Fruit(WIDTH/2, 0))     #INITIAL FRUIT AT START *FOR TESING*
+fruitList.append(CircleFruit(WIDTH, random.randrange(0,HEIGHT/2)))     #INITIAL FRUIT AT START *FOR TESING*
 cutFruitList = []   #for fruit that has been cut
 
 #health
@@ -42,6 +44,12 @@ healthObject = healthFont.render(str(health), True, healthColor)
 def mapToNewRange(val, inputMin, inputMax, outputMin, outputMax):
     return outputMin + ((outputMax - outputMin) / (inputMax - inputMin)) * (val - inputMin)
 
+#test function to collide with cirle hitbox
+def collide_circle(circle1, circle2):
+    radius1, radius2 = circle1.width/2, circle2.width/2
+    dist = math.hypot(circle1.centerx-circle2.centerx, circle1.centery-circle2.centery)
+    return dist < radius1+radius2
+
 #########
 # main function
 #########
@@ -56,9 +64,6 @@ def main():
     # make a hand detector
     handDetector = HandDetector()
 
-    # keeps track if pygame should keep running
-    pygameIsRunning = True
-
     #chosen hand point
     handPoint = 8  #THE TIP OF POINTER FINGER
     # handPoint = 19  #THE FIRST JOINT OF PINKIE
@@ -68,7 +73,8 @@ def main():
     cursorY = 0
     cursorZ = 0
     cursorColor = (255, 120, 0) #orange
-    cursorRadius = 25
+    cursorWidth = 25
+    cursorHeight = 25
 
     #fruit vars
     fruitColor = (255,0,255)    #pink
@@ -77,18 +83,46 @@ def main():
     #test fruit object
     # aFruit = Fruit(WIDTH/2, 0)  #draw fruit rectangle at top of screen center 
 
+    # make a clock object that will be used
+    # to make the game run at a consistent framerate
+    clock = pygame.time.Clock()
+    # keeps track if pygame should keep running
+    pygameIsRunning = True
+
     # while the opencv window is running and pygame screen is up
     while not handDetector.shouldClose and pygameIsRunning:
         # update the webcam feed and hand tracker calculations
         handDetector.update()
-                
+
+	    # this makes it so this function can run at most FPS times/sec
+        clock.tick(FPS)       
         # fill the background with black
         WINDOW.fill(0)
-
         #display health
         WINDOW.blit(healthObject, (0, 0))
 
+        # #FOR ALL CUT FRUIT
+        # for aCutFruit in cutFruitList:
+        #     aCutFruit.render(cutFruitColor, WINDOW) #SHOW CUT FRUIT ON SCREEN
+        #     aCutFruit.move()                        #MOVE CUT FRUIT
 
+        # #FOR ALL UNCUT FRUIT
+        # for aFruit in fruitList:
+        #     aFruit.render(fruitColor, WINDOW)       #SHOW UNCUT FRUIT ON SCREEN 
+        #     aFruit.move()                           #MOVE UNCUT FRUIT
+        #     if aFruit.isCut == True:                #if the fruit has been cut
+        #         cutFruitList.append(aFruit)         #add fruit to the cutFruit list
+        #         fruitList.remove(aFruit)            #remove the cut fruit from the uncut fruit list
+        #         healthObject = healthFont.render(str(health), True, healthColor)    #display new health
+        #         fruitList.append(Fruit(WIDTH, random.randrange(0,HEIGHT/2)))    #this is a test
+        #         # print(cutFruitList)
+        #     if aFruit.y > HEIGHT:                   #if uncut fruit falls below the screen
+        #         fruitList.remove(aFruit)            #remove from list
+        #         health -= 1                         #remove one life
+        #         healthObject = healthFont.render(str(health), True, healthColor)    #display new health
+        #         fruitList.append(Fruit(WIDTH, random.randrange(0,HEIGHT/2)))    #this is a test
+        
+        #CIRCLE FRUITTTTTTTTTTTTT
         #FOR ALL CUT FRUIT
         for aCutFruit in cutFruitList:
             aCutFruit.render(cutFruitColor, WINDOW) #SHOW CUT FRUIT ON SCREEN
@@ -102,14 +136,13 @@ def main():
                 cutFruitList.append(aFruit)         #add fruit to the cutFruit list
                 fruitList.remove(aFruit)            #remove the cut fruit from the uncut fruit list
                 healthObject = healthFont.render(str(health), True, healthColor)    #display new health
-                fruitList.append(Fruit(WIDTH, random.randrange(0,HEIGHT/2)))    #this is a test
+                fruitList.append(CircleFruit(WIDTH, random.randrange(0,HEIGHT/2)))    #spawn new fruit on random spot on right sude of screen #this is a test
                 # print(cutFruitList)
             if aFruit.y > HEIGHT:                   #if uncut fruit falls below the screen
                 fruitList.remove(aFruit)            #remove from list
                 health -= 1                         #remove one life
                 healthObject = healthFont.render(str(health), True, healthColor)    #display new health
-                fruitList.append(Fruit(WIDTH, random.randrange(0,HEIGHT/2)))    #this is a test
-        
+                fruitList.append(CircleFruit(WIDTH, random.randrange(0,HEIGHT/2)))  #spawn new fruit on random spot on right sude of screen 
 
         # if there is at least one hand seen, then
         # do all this code
@@ -130,14 +163,17 @@ def main():
             ######################
             # Track collision between hand point and fruit
             ######################
-            # draw circle at hand point 
-            pygame.draw.circle(WINDOW, cursorColor, (cursorX, cursorY), cursorRadius)
+            # draw rectangle at hand point 
+            cursorRect = pygame.Rect(cursorX, cursorY, cursorWidth, cursorHeight)
+            pygame.draw.rect(WINDOW, cursorColor, cursorRect)
             
             #check collison between rectangle and hand point
-            if aFruit.fruitRect.collidepoint(cursorX, cursorY):
-                aFruit.isCut = True
-            else:
-                fruitColor = (255,0,255)
+            # if aFruit.fruitRect.collidepoint(cursorX, cursorY):
+            #     aFruit.isCut = True
+            # else:
+            #     fruitColor = (255,0,255)
+
+            #check collision between circles
 
 
         # for all the game events
