@@ -5,8 +5,7 @@
 import cv2, pygame, random, math
 
 from HandDetector import HandDetector
-from Fruit import Fruit, CircleFruit
-
+from Fruit import Fruit
 ################
 # GLOBAL THINGS
 ################
@@ -26,7 +25,8 @@ pygame.font.init()
 
 #fruit list
 fruitList = []
-fruitList.append(CircleFruit(WIDTH, random.randrange(0,HEIGHT/2)))     #INITIAL FRUIT AT START *FOR TESING*
+#INITIAL FRUIT AT START *FOR TESING*
+fruitList.append(Fruit(WIDTH, random.randrange(int(HEIGHT/3),int(HEIGHT-(HEIGHT/3)))))  #spawn fruit in random spot in the middle thrid of the right side of the screen
 cutFruitList = []   #for fruit that has been cut
 
 #health
@@ -44,11 +44,11 @@ healthObject = healthFont.render(str(health), True, healthColor)
 def mapToNewRange(val, inputMin, inputMax, outputMin, outputMax):
     return outputMin + ((outputMax - outputMin) / (inputMax - inputMin)) * (val - inputMin)
 
-#test function to collide with cirle hitbox
-def collide_circle(circle1, circle2):
-    radius1, radius2 = circle1.width/2, circle2.width/2
-    dist = math.hypot(circle1.centerx-circle2.centerx, circle1.centery-circle2.centery)
-    return dist < radius1+radius2
+# #test function to collide with cirle hitbox
+# def collide_circle(circle1, circle2):
+#     radius1, radius2 = circle1.width/2, circle2.width/2
+#     dist = math.hypot(circle1.centerx-circle2.centerx, circle1.centery-circle2.centery)
+#     return dist < radius1+radius2
 
 #########
 # main function
@@ -102,28 +102,6 @@ def main():
         #display health
         WINDOW.blit(healthObject, (0, 0))
 
-        # #FOR ALL CUT FRUIT
-        # for aCutFruit in cutFruitList:
-        #     aCutFruit.render(cutFruitColor, WINDOW) #SHOW CUT FRUIT ON SCREEN
-        #     aCutFruit.move()                        #MOVE CUT FRUIT
-
-        # #FOR ALL UNCUT FRUIT
-        # for aFruit in fruitList:
-        #     aFruit.render(fruitColor, WINDOW)       #SHOW UNCUT FRUIT ON SCREEN 
-        #     aFruit.move()                           #MOVE UNCUT FRUIT
-        #     if aFruit.isCut == True:                #if the fruit has been cut
-        #         cutFruitList.append(aFruit)         #add fruit to the cutFruit list
-        #         fruitList.remove(aFruit)            #remove the cut fruit from the uncut fruit list
-        #         healthObject = healthFont.render(str(health), True, healthColor)    #display new health
-        #         fruitList.append(Fruit(WIDTH, random.randrange(0,HEIGHT/2)))    #this is a test
-        #         # print(cutFruitList)
-        #     if aFruit.y > HEIGHT:                   #if uncut fruit falls below the screen
-        #         fruitList.remove(aFruit)            #remove from list
-        #         health -= 1                         #remove one life
-        #         healthObject = healthFont.render(str(health), True, healthColor)    #display new health
-        #         fruitList.append(Fruit(WIDTH, random.randrange(0,HEIGHT/2)))    #this is a test
-        
-        #CIRCLE FRUITTTTTTTTTTTTT
         #FOR ALL CUT FRUIT
         for aCutFruit in cutFruitList:
             aCutFruit.render(cutFruitColor, WINDOW) #SHOW CUT FRUIT ON SCREEN
@@ -137,13 +115,35 @@ def main():
                 cutFruitList.append(aFruit)         #add fruit to the cutFruit list
                 fruitList.remove(aFruit)            #remove the cut fruit from the uncut fruit list
                 healthObject = healthFont.render(str(health), True, healthColor)    #display new health
-                fruitList.append(CircleFruit(WIDTH, random.randrange(0,HEIGHT/2)))    #spawn new fruit on random spot on right sude of screen #this is a test
+                fruitList.append(Fruit(WIDTH, random.randrange(int(HEIGHT/3),int(HEIGHT-(HEIGHT/3)))))  #spawn fruit in random spot in the middle thrid of the right side of the screen
                 # print(cutFruitList)
             if aFruit.y > HEIGHT:                   #if uncut fruit falls below the screen
                 fruitList.remove(aFruit)            #remove from list
                 health -= 1                         #remove one life
                 healthObject = healthFont.render(str(health), True, healthColor)    #display new health
-                fruitList.append(CircleFruit(WIDTH, random.randrange(0,HEIGHT/2)))  #spawn new fruit on random spot on right sude of screen 
+                fruitList.append(Fruit(WIDTH, random.randrange(int(HEIGHT/3),int(HEIGHT-(HEIGHT/3)))))  #spawn fruit in random spot in the middle thrid of the right side of the screen
+        
+        # #CIRCLE FRUITTTTTTTTTTTTT
+        # #FOR ALL CUT FRUIT
+        # for aCutFruit in cutFruitList:
+        #     aCutFruit.render(cutFruitColor, WINDOW) #SHOW CUT FRUIT ON SCREEN
+        #     aCutFruit.move()                        #MOVE CUT FRUIT
+
+        # #FOR ALL UNCUT FRUIT
+        # for aFruit in fruitList:
+        #     aFruit.render(fruitColor, WINDOW)       #SHOW UNCUT FRUIT ON SCREEN 
+        #     aFruit.move()                           #MOVE UNCUT FRUIT
+        #     if aFruit.isCut == True:                #if the fruit has been cut
+        #         cutFruitList.append(aFruit)         #add fruit to the cutFruit list
+        #         fruitList.remove(aFruit)            #remove the cut fruit from the uncut fruit list
+        #         healthObject = healthFont.render(str(health), True, healthColor)    #display new health
+        #         fruitList.append(CircleFruit(WIDTH, random.randrange(0,HEIGHT/2)))    #spawn new fruit on random spot on right sude of screen #this is a test
+        #         # print(cutFruitList)
+        #     if aFruit.y > HEIGHT:                   #if uncut fruit falls below the screen
+        #         fruitList.remove(aFruit)            #remove from list
+        #         health -= 1                         #remove one life
+        #         healthObject = healthFont.render(str(health), True, healthColor)    #display new health
+        #         fruitList.append(CircleFruit(WIDTH, random.randrange(0,HEIGHT/2)))  #spawn new fruit on random spot on right sude of screen 
 
         # if there is at least one hand seen, then
         # do all this code
@@ -168,13 +168,11 @@ def main():
             cursorRect = pygame.Rect(cursorX, cursorY, cursorWidth, cursorHeight)
             pygame.draw.rect(WINDOW, cursorColor, cursorRect)
             
-            #check collison between rectangle and hand point
-            # if aFruit.fruitRect.collidepoint(cursorX, cursorY):
-            #     aFruit.isCut = True
-            # else:
-            #     fruitColor = (255,0,255)
-
-            #check collision between circles
+            # check collison between rectangle and hand point
+            if aFruit.fruitRect.collidepoint(cursorX, cursorY):
+                aFruit.isCut = True
+            else:
+                fruitColor = (255,0,255)
 
 
         # for all the game events
