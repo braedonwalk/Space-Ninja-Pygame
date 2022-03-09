@@ -77,6 +77,7 @@ def main():
     cursorHeight = 25
 
     #fruit vars
+    fruitGroup = pygame.sprite.Group()
     fruitColor = (255,0,255)    #pink
     cutFruitColor = (0,0,255)   #blue
 

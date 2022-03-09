@@ -30,7 +30,7 @@ class Fruit:
         self.x -= self.xVel      #move fruit down at the rate of acceleration
         # print(self.fruitRect)
 
-class CircleFruit:
+class CircleFruit(pygame.sprite.Sprite):
 
     # CLASS VARS
     radius = 25
