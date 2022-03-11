@@ -31,8 +31,9 @@ cutFruitList = []   #for fruit that has been cut
 
 #health
 health = 3
+#WE ARE NOT KEEPING MOST OF THIS FONT STUFF
 healthColor = (255,0,0) #red
-healthFont = pygame.font.SysFont("Helvetica", 40)
+healthFont = pygame.font.SysFont("Helvetica", 40)   
 healthObject = healthFont.render(str(health), True, healthColor)
 
 
@@ -77,7 +78,7 @@ def main():
     cursorHeight = 25
 
     #fruit vars
-    fruitGroup = pygame.sprite.Group()
+    # fruitGroup = pygame.sprite.Group()
     fruitColor = (255,0,255)    #pink
     cutFruitColor = (0,0,255)   #blue
 
