@@ -5,7 +5,7 @@
 import cv2, pygame, random, math
 
 from HandDetector import HandDetector
-from Fruit import Fruit
+from Planet import Planet
 ################
 # GLOBAL THINGS
 ################
@@ -23,7 +23,7 @@ FPS = 60
 CURSORWIDTH = 125
 CURSORHEIGHT = 25
 #background
-background = pygame.image.load("Assets/cuttingBoard.jpg").convert()
+background = pygame.image.load("Assets/Space1/Blue Nebula/Blue Nebula 1 - 1024x1024.png").convert()
 #scale to the size of the screen
 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 
@@ -41,11 +41,11 @@ gameWin = False
 #initialize all fonts
 pygame.font.init()
 
-#fruit list
-fruitList = []
-#INITIAL FRUIT AT START *FOR TESING*
-fruitList.append(Fruit(WIDTH, random.randrange(int(HEIGHT/3),int(HEIGHT-(HEIGHT/3)))))  #spawn fruit in random spot in the middle thrid of the right side of the screen
-cutFruitList = []   #for fruit that has been cut
+#Planet list
+planetList = []
+#INITIAL Planet AT START *FOR TESING*
+planetList.append(Planet(WIDTH, random.randrange(int(HEIGHT/3),int(HEIGHT-(HEIGHT/3)))))  #spawn Planet in random spot in the middle thrid of the right side of the screen
+cutPlanetList = []   #for Planet that has been cut
 
 #health
 health = 3
@@ -69,8 +69,8 @@ def mapToNewRange(val, inputMin, inputMax, outputMin, outputMax):
 
 def main():
     #use variables called from beginning of sketch
-    global fruitList
-    global cutFruitList
+    global planetList
+    global cutPlanetList
     global health
     global healthObject
 
@@ -87,10 +87,11 @@ def main():
     cursorZ = 0
     cursorColor = (255, 120, 0) #orange
 
-    #fruit vars
+    #Planet vars
     # fruitGroup = pygame.sprite.Group()
-    fruitColor = (255,0,255)    #pink
-    cutFruitColor = (0,0,255)   #blue
+    #THIS WILL NOT STAY
+    planetColor = (255,0,255)    #pink
+    cutPlanetColor = (0,0,255)   #blue
 
     # make a clock object that will be used
     # to make the game run at a consistent framerate
@@ -114,26 +115,26 @@ def main():
         #display health
         WINDOW.blit(healthObject, (0, 0))
 
-        #FOR ALL CUT FRUIT
-        for aCutFruit in cutFruitList:
-            aCutFruit.render(cutFruitColor, WINDOW) #SHOW CUT FRUIT ON SCREEN
-            aCutFruit.move()                        #MOVE CUT FRUIT
+        #FOR ALL CUT PLANETS
+        for aCutPlanet in cutPlanetList:
+            aCutPlanet.update(cutPlanetColor, WINDOW, knife) #SHOW CUT PLANET ON SCREEN
+            aCutPlanet.move()                        #MOVE CUT PLANET
 
-        #FOR ALL UNCUT FRUIT
-        for aFruit in fruitList:
-            aFruit.render(fruitColor, WINDOW)       #SHOW UNCUT FRUIT ON SCREEN 
-            aFruit.move()                           #MOVE UNCUT FRUIT
-            if aFruit.isCut == True:                #if the fruit has been cut
-                cutFruitList.append(aFruit)         #add fruit to the cutFruit list
-                fruitList.remove(aFruit)            #remove the cut fruit from the uncut fruit list
+        #FOR ALL UNCUT PLANETS
+        for aPlanet in planetList:
+            aPlanet.update(planetColor, WINDOW, "Assets/Knives/7.png")       #SHOW UNCUT PLANET ON SCREEN 
+            aPlanet.move()                           #MOVE UNCUT PLANET
+            if aPlanet.isCut == True:                #if the PLANET has been cut
+                cutPlanetList.append(aPlanet)         #add PLANET to the cutPLANET list
+                planetList.remove(aPlanet)            #remove the cut PLANET from the uncut PLANET list
                 healthObject = healthFont.render(str(health), True, healthColor)    #display new health
-                fruitList.append(Fruit(WIDTH, random.randrange(int(HEIGHT/3),int(HEIGHT-(HEIGHT/3)))))  #spawn fruit in random spot in the middle thrid of the right side of the screen
+                planetList.append(Planet(WIDTH, random.randrange(int(HEIGHT/3),int(HEIGHT-(HEIGHT/3)))))  #spawn Planet in random spot in the middle thrid of the right side of the screen
                 # print(cutFruitList)
-            if aFruit.y > HEIGHT:                   #if uncut fruit falls below the screen
-                fruitList.remove(aFruit)            #remove from list
+            if aPlanet.y > HEIGHT:                   #if uncut Planet falls below the screen
+                planetList.remove(aPlanet)            #remove from list
                 health -= 1                         #remove one life
                 healthObject = healthFont.render(str(health), True, healthColor)    #display new health
-                fruitList.append(Fruit(WIDTH, random.randrange(int(HEIGHT/3),int(HEIGHT-(HEIGHT/3)))))  #spawn fruit in random spot in the middle thrid of the right side of the screen
+                planetList.append(Planet(WIDTH, random.randrange(int(HEIGHT/3),int(HEIGHT-(HEIGHT/3)))))  #spawn Planet in random spot in the middle thrid of the right side of the screen
         
         # if there is at least one hand seen, then
         # do all this code
@@ -152,25 +153,25 @@ def main():
             cursorY = mapToNewRange(cursorY, 0, handDetector.height, 0, HEIGHT)
 
             ######################
-            # Track collision between hand point and fruit
+            # Track collision between hand point and PLANETS
             ######################
             # draw rectangle at hand point 
             cursorRect = pygame.Rect(cursorX, cursorY, CURSORWIDTH, CURSORHEIGHT)
-            # pygame.draw.rect(WINDOW, cursorColor, cursorRect)
+            pygame.draw.rect(WINDOW, cursorColor, cursorRect)   #DRAW RECTANGLE
             WINDOW.blit(knife, (cursorX, cursorY))
 
             
             # check collison between rectangle and hand point
             #collide rectangle with rectangle
-            if aFruit.fruitRect.colliderect(cursorRect):
-                aFruit.isCut = True
+            if aPlanet.planetRect.colliderect(cursorRect):
+                aPlanet.isCut = True
             else:
-                fruitColor = (255,0,255)
-            #collide rectangle with circle
-            if aFruit.fruitRect.colliderect(cursorRect):
-                aFruit.isCut = True
-            else:
-                fruitColor = (255,0,255)
+                planetColor = (255,0,255)
+            # #collide rectangle with circle
+            # if cursorRect.collidepoint(aPlanet.x, aPlanet.y):
+            #     aPlanet.isCut = True
+            # else:
+            #     planetColor = (255,0,255)
 
 
         # for all the game events
