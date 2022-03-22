@@ -28,9 +28,13 @@ background = pygame.image.load("Assets/Space1/Blue Nebula/Blue Nebula 1 - 1024x1
 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 
 #init assets
+#KINVES
 knife = pygame.image.load("Assets/Knives/7.png").convert_alpha()
 knife = pygame.transform.rotate(knife, 90)
 knife = pygame.transform.scale(knife, (CURSORWIDTH, CURSORHEIGHT))
+
+#PLANETS
+planetAssets = ["Assets/Planets/barren1.png", "Assets/Planets/barren2.png", "Assets/Planets/barren3.png", "Assets/Planets/barren4.png", "Assets/Planets/desert1.png", "Assets/Planets/desert2.png", "Assets/Planets/forest1.png", "Assets/Planets/forest2.png", "Assets/Planets/gas1.png", "Assets/Planets/gas2.png","Assets/Planets/gas3.png", "Assets/Planets/gas4.png", "Assets/Planets/ice1.png", "Assets/Planets/lava1.png", "Assets/Planets/lava2.png", "Assets/Planets/lava3.png", "Assets/Planets/ocean1.png", "Assets/Planets/ocean2.png", "Assets/Planets/rocky1.png", "Assets/Planets/rocky2.png", "Assets/Planets/rocky3.png", "Assets/Planets/sun1.png", "Assets/Planets/sun2.png", "Assets/Planets/sun3.png", "Assets/Planets/sun4.png", "Assets/Planets/sun5.png", "Assets/Planets/sun6.png", "Assets/Planets/sun7.png", "Assets/Planets/tech1.png", "Assets/Planets/tech2.png", "Assets/Planets/tech3.png", "Assets/Planets/terran1.png", "Assets/Planets/terran2.png", "Assets/Planets/tundra1.png"]
 
 #booleans for state machine
 mainMenu = True
@@ -44,7 +48,7 @@ pygame.font.init()
 #Planet list
 planetList = []
 #INITIAL Planet AT START *FOR TESING*
-planetList.append(Planet(WIDTH, random.randrange(int(HEIGHT/3),int(HEIGHT-(HEIGHT/3))), "Assets/Planets/tundra1.png"))  #spawn Planet in random spot in the middle thrid of the right side of the screen
+planetList.append(Planet(WIDTH, random.randrange(int(HEIGHT/3),int(HEIGHT-(HEIGHT/3))), random.choice(planetAssets)))  #spawn Planet in random spot in the middle thrid of the right side of the screen
 cutPlanetList = []   #for Planet that has been cut
 
 #health
@@ -129,13 +133,13 @@ def main():
                 cutPlanetList.append(aPlanet)         #add PLANET to the cutPLANET list - remove planet from screen
                 planetList.remove(aPlanet)            #remove the cut PLANET from the uncut PLANET list
                 healthObject = healthFont.render(str(health), True, healthColor)    #display new health
-                planetList.append(Planet(WIDTH, random.randrange(int(HEIGHT/3), int(HEIGHT-(HEIGHT/3))), "Assets/Planets/tundra1.png"))  #spawn Planet in random spot in the middle thrid of the right side of the screen
+                planetList.append(Planet(WIDTH, random.randrange(int(HEIGHT/3), int(HEIGHT-(HEIGHT/3))), random.choice(planetAssets)))  #spawn Planet in random spot in the middle thrid of the right side of the screen
                 # print(cutFruitList)
             if aPlanet.y > HEIGHT:                   #if uncut Planet falls below the screen
                 planetList.remove(aPlanet)            #remove from list
                 health -= 1                         #remove one life
                 healthObject = healthFont.render(str(health), True, healthColor)    #display new health
-                planetList.append(Planet(WIDTH, random.randrange(int(HEIGHT/3), int(HEIGHT-(HEIGHT/3))), "Assets/Planets/tundra1.png"))  #spawn Planet in random spot in the middle thrid of the right side of the screen
+                planetList.append(Planet(WIDTH, random.randrange(int(HEIGHT/3), int(HEIGHT-(HEIGHT/3))), random.choice(planetAssets)))  #spawn Planet in random spot in the middle thrid of the right side of the screen
         
         # if there is at least one hand seen, then
         # do all this code
@@ -158,7 +162,7 @@ def main():
             ######################
             # draw rectangle at hand point 
             cursorRect = pygame.Rect(cursorX, cursorY, CURSORWIDTH, CURSORHEIGHT)
-            pygame.draw.rect(WINDOW, cursorColor, cursorRect)   #DRAW RECTANGLE
+            # pygame.draw.rect(WINDOW, cursorColor, cursorRect)   #DRAW RECTANGLE
             WINDOW.blit(knife, (cursorX, cursorY))
 
             
