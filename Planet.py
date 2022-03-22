@@ -13,17 +13,19 @@ class Planet:
     yAccel = 0  
     isCut = False
 
-    def __init__(self, _x, _y):
+    def __init__(self, _x, _y, _planetAsset):
         self.x = _x
         self.y = _y
+        self.planetAsset = pygame.image.load(_planetAsset).convert_alpha()                    #load in image of planet
+        self.planetAsset = pygame.transform.scale(self.planetAsset, (self.size, self.size))   #scale image to size of planet
         self.planetRect = pygame.Rect(_x, _y, self.size, self.size)
 
-    def update(self, _color, _window, _planet):
-        self.planetRect = pygame.Rect(self.x, self.y, self.size, self.size)
-        planetAsset = pygame.image.load(_planet).convert_alpha()
-        planetAsset = pygame.transform.scale(planetAsset, (self.size, self.size))
-        _window.blit(planetAsset, (self.x, self.y))
-        pygame.draw.rect(_window, _color, self.planetRect)
+    def update(self, _color, _window):
+        self.planetRect = pygame.Rect(self.x, self.y, self.size, self.size) #update bounds of planet
+        # self.planetAsset = pygame.image.load(_planet).convert_alpha()            #load in image of planet
+        # self.planetAsset = pygame.transform.scale(self.planetAsset, (self.size, self.size))   #scale image to size of planet
+        _window.blit(self.planetAsset, (self.x, self.y))                         #draw planet on screen
+        # pygame.draw.rect(_window, _color, self.planetRect)                  #draw hit box
         # pygame.draw.circle(_window, _color, (self.x, self.y), self.radius)
 
     def move(self):

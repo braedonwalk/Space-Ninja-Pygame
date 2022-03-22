@@ -44,7 +44,7 @@ pygame.font.init()
 #Planet list
 planetList = []
 #INITIAL Planet AT START *FOR TESING*
-planetList.append(Planet(WIDTH, random.randrange(int(HEIGHT/3),int(HEIGHT-(HEIGHT/3)))))  #spawn Planet in random spot in the middle thrid of the right side of the screen
+planetList.append(Planet(WIDTH, random.randrange(int(HEIGHT/3),int(HEIGHT-(HEIGHT/3))), "Assets/Planets/tundra1.png"))  #spawn Planet in random spot in the middle thrid of the right side of the screen
 cutPlanetList = []   #for Planet that has been cut
 
 #health
@@ -117,24 +117,25 @@ def main():
 
         #FOR ALL CUT PLANETS
         for aCutPlanet in cutPlanetList:
-            aCutPlanet.update(cutPlanetColor, WINDOW, knife) #SHOW CUT PLANET ON SCREEN
-            aCutPlanet.move()                        #MOVE CUT PLANET
+            # aCutPlanet.update(cutPlanetColor, WINDOW) #SHOW CUT PLANET ON SCREEN
+            # aCutPlanet.move()                        #MOVE CUT PLANET
+            pass
 
         #FOR ALL UNCUT PLANETS
         for aPlanet in planetList:
-            aPlanet.update(planetColor, WINDOW, "Assets/Knives/7.png")       #SHOW UNCUT PLANET ON SCREEN 
+            aPlanet.update(planetColor, WINDOW)       #SHOW UNCUT PLANET ON SCREEN 
             aPlanet.move()                           #MOVE UNCUT PLANET
             if aPlanet.isCut == True:                #if the PLANET has been cut
-                cutPlanetList.append(aPlanet)         #add PLANET to the cutPLANET list
+                cutPlanetList.append(aPlanet)         #add PLANET to the cutPLANET list - remove planet from screen
                 planetList.remove(aPlanet)            #remove the cut PLANET from the uncut PLANET list
                 healthObject = healthFont.render(str(health), True, healthColor)    #display new health
-                planetList.append(Planet(WIDTH, random.randrange(int(HEIGHT/3),int(HEIGHT-(HEIGHT/3)))))  #spawn Planet in random spot in the middle thrid of the right side of the screen
+                planetList.append(Planet(WIDTH, random.randrange(int(HEIGHT/3), int(HEIGHT-(HEIGHT/3))), "Assets/Planets/tundra1.png"))  #spawn Planet in random spot in the middle thrid of the right side of the screen
                 # print(cutFruitList)
             if aPlanet.y > HEIGHT:                   #if uncut Planet falls below the screen
                 planetList.remove(aPlanet)            #remove from list
                 health -= 1                         #remove one life
                 healthObject = healthFont.render(str(health), True, healthColor)    #display new health
-                planetList.append(Planet(WIDTH, random.randrange(int(HEIGHT/3),int(HEIGHT-(HEIGHT/3)))))  #spawn Planet in random spot in the middle thrid of the right side of the screen
+                planetList.append(Planet(WIDTH, random.randrange(int(HEIGHT/3), int(HEIGHT-(HEIGHT/3))), "Assets/Planets/tundra1.png"))  #spawn Planet in random spot in the middle thrid of the right side of the screen
         
         # if there is at least one hand seen, then
         # do all this code
