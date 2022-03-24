@@ -13,5 +13,5 @@ class Button:
         # self.buttonCenter = self.buttonRect.center(_x-_r, _y-_r)
         # pygame.draw.circle(_window, _color, (_x-_r, _y-_r), _r)   #draw the circle for button
 
-    def update(self, _window):
-        pygame.draw.circle(_window, self.color, (self.x , self.y ), self.r, 3)   #draw the circle for button
+    def update(self, _window, _thickness):
+        pygame.draw.circle(_window, self.color, (self.x , self.y ), self.r, _thickness)   #draw the circle for button

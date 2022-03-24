@@ -19,7 +19,7 @@ class Planet:
         self.planetAsset = pygame.transform.scale(self.planetAsset, (self.size, self.size))   #scale image to size of planet
         self.planetRect = pygame.Rect(_x, _y, self.size, self.size)
 
-    def update(self, _color, _window):
+    def update(self, _window):
         self.planetRect = pygame.Rect(self.x, self.y, self.size, self.size) #update bounds of planet
         # self.planetAsset = pygame.image.load(_planet).convert_alpha()            #load in image of planet
         # self.planetAsset = pygame.transform.scale(self.planetAsset, (self.size, self.size))   #scale image to size of planet
