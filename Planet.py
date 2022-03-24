@@ -1,7 +1,6 @@
 # IMPORTS
 import pygame
 
-
 class Planet:
 
     # CLASS VARS
@@ -28,9 +27,12 @@ class Planet:
         # pygame.draw.rect(_window, _color, self.planetRect)                  #draw hit box
         # pygame.draw.circle(_window, _color, (self.x, self.y), self.radius)
 
-    def move(self):
+    def move(self, _coinFlip):
         self.yAccel = self.mass    #set acceleration equal to mass
         self.yVel += self.yAccel    #increase velocity at rate of acceleration
         self.y += self.yVel      #move planet down at the rate of velocity
-        self.x -= self.xVel      #move planet down at the rate of acceleration
+        if _coinFlip:
+            self.x -= self.xVel      #move planet left at the rate of acceleration
+        else:
+            self.x += self.xVel      #move planet left at the rate of acceleration
         # print(self.planetRect)
