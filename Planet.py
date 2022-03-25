@@ -1,4 +1,5 @@
 # IMPORTS
+import random
 import pygame
 
 class Planet:
@@ -15,6 +16,7 @@ class Planet:
     def __init__(self, _x, _y, _planetAsset):
         self.x = _x
         self.y = _y
+        self.mass = random.uniform(0.4,0.7) #random mass between 0.4 and 0.7
         self.planetAsset = pygame.image.load(_planetAsset).convert_alpha()                    #load in image of planet
         self.planetAsset = pygame.transform.scale(self.planetAsset, (self.size, self.size))   #scale image to size of planet
         self.planetRect = pygame.Rect(_x, _y, self.size, self.size)

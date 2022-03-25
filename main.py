@@ -2,12 +2,9 @@
 # imports
 #############
 
-from glob import glob
-from turtle import right
 import cv2
 import pygame
 import random
-import math
 
 from HandDetector import HandDetector
 from Planet import Planet
@@ -67,16 +64,15 @@ cutPlanetList = []  # for Planet that has been cut
 
 # health
 health = 3
-# WE ARE NOT KEEPING MOST OF THIS FONT STUFF
 healthColor = (255, 0, 0)  # red
-healthFont = pygame.font.SysFont("Helvetica", 60)
+healthFont = pygame.font.Font("SPACE.ttf", 50)
 healthObject = healthFont.render(str(health), True, healthColor)
 
 # score
 score = 0
 # WE ARE NOT KEEPING MOST OF THIS FONT STUFF
 scoreColor = (255, 100, 0)  # orange
-scoreFont = pygame.font.SysFont("Helvetica", 60)
+scoreFont = pygame.font.Font("SPACE.ttf", 50)
 scoreObject = scoreFont.render(str(score), True, scoreColor)
 
 screenCase = 0  # "switch case" for displaying the screen    #default is 0
