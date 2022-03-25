@@ -98,9 +98,9 @@ class HandDetector:
                         self.mpDraw.draw_landmarks(img, landmarkSet, self.mpHands.HAND_CONNECTIONS)
 
                 # show the current frame in a window titled "Webcam feed"
-                cv2.imshow("Webcam feed", img)
+                # cv2.imshow("Webcam feed", img)
                 # if you press the q key or click on the exit button, then close the video window (& is bitwise "and")
                 # This also makes it wait 1ms between each frame
                 # Note: "getWindowProperty"
-                if cv2.waitKey(1) & 0xFF == ord('q') or cv2.getWindowProperty("Webcam feed", 0) < 0:
+                if cv2.waitKey(1) & 0xFF == ord('q') < 0:
                     self.shouldClose = True
