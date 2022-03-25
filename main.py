@@ -668,6 +668,8 @@ def main():
                     updateMain = True
 
                 if currentTime - sec_in_mainButton > 2000:
+                    score = 0
+                    health = 3
                     screenCase = 0
 
                 #PLAY AGAIN BUTTON
