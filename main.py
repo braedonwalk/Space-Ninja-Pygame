@@ -3,6 +3,7 @@
 #############
 
 from glob import glob
+from turtle import right
 import cv2
 import pygame
 import random
@@ -31,14 +32,13 @@ FPS = 60
 CURSORWIDTH = 125
 CURSORHEIGHT = 25
 # all backgrounds
-gameBackground = pygame.image.load(
-    "Assets/Space1/Blue Nebula/Blue Nebula 1 - 1024x1024.png").convert()
-mainBackground = pygame.image.load(
-    "Assets/Space1/Starfields/Starfield 1 - 1024x1024.png").convert()
+gameBackground = pygame.image.load("Assets/Space/blueNebula.png").convert()
+mainBackground = pygame.image.load("Assets/Space/starField.png").convert()
+endBackground = pygame.image.load("Assets/Space/purpleNebula.png").convert()
 # scale to the size of the screen
 gameBackground = pygame.transform.scale(gameBackground, (WIDTH, HEIGHT))
 mainBackground = pygame.transform.scale(mainBackground, (WIDTH, HEIGHT))
-
+endBackground = pygame.transform.scale(endBackground, (WIDTH, HEIGHT))
 
 # init assets
 # KINVES
@@ -63,28 +63,42 @@ pygame.font.init()
 
 # Planet list
 planetList = []
-# INITIAL Planet AT START *FOR TESING*
-# spawn Planet in random spot in the middle thrid of the right side of the screen
-# planetList.append(Planet(WIDTH, random.randrange(
-#     int(HEIGHT/3), int(HEIGHT-(HEIGHT/3))), random.choice(planetAssets)))
 cutPlanetList = []  # for Planet that has been cut
 
 # health
 health = 3
 # WE ARE NOT KEEPING MOST OF THIS FONT STUFF
 healthColor = (255, 0, 0)  # red
-healthFont = pygame.font.SysFont("Helvetica", 40)
+healthFont = pygame.font.SysFont("Helvetica", 60)
 healthObject = healthFont.render(str(health), True, healthColor)
 
-screenCase = 0  # "switch case" for displaying the screen    #default is 0
+# score
+score = 0
+# WE ARE NOT KEEPING MOST OF THIS FONT STUFF
+scoreColor = (255, 100, 0)  # orange
+scoreFont = pygame.font.SysFont("Helvetica", 60)
+scoreObject = scoreFont.render(str(score), True, scoreColor)
+
+screenCase = 2  # "switch case" for displaying the screen    #default is 0
 
 # HOMESCREEN VARIABLES
 # startButton = Button(WIDTH/2, HEIGHT - 50, 200, 50)
 startButtonColor = (0, 120, 50)  # DARK GREEN
-startButton = Button(startButtonColor, WIDTH/2, HEIGHT - 100, 50)  # COLOR, X, Y, RADIUS
+startButton = Button(startButtonColor, WIDTH/2, HEIGHT - 200, 50)  # COLOR, X, Y, RADIUS
 # startButtonCenter = startButton.buttonRect.center = (startButton.r/2, startButton.r/2)
 
+#END SCREEN
+textHeight = HEIGHT - 250
+mainButtonColor = (0,0,255) #BLUE
+mainButtDimensions = (WIDTH-WIDTH/3, textHeight)
+mainButton = Button(mainButtonColor, WIDTH-WIDTH/3, textHeight, 75)
+playButtonColor = (0,120,50)    #DARK GREEN
+playButtDimensions = (WIDTH/3, textHeight)
+playButton = Button(playButtonColor, WIDTH/3, textHeight, 75)
+
 updateTime = True
+updateMain = True
+updatePlay = True
 
 ################
 # Function defs
@@ -103,22 +117,44 @@ def homeScreen():
     startFont = pygame.font.Font("SPACE.ttf", 20)
     instructionFont = pygame.font.Font("SPACE.ttf", 20)
 
-    titleObject = titleFont.render("Space Ninja", True, titleColor)  # set text to font
-    titleObject_center = titleObject.get_rect(center=(WIDTH/2, HEIGHT/3))  # set the center point of the text
-    startObject = startFont.render("Start", True, titleColor)
-    startObject_center = startObject.get_rect(center=(WIDTH/2, startButton.y))  # set the center point of the text
+    titleText = titleFont.render("Space Ninja", True, titleColor)  # set text to font
+    titleText_center = titleText.get_rect(center=(WIDTH/2, HEIGHT/3))  # set the center point of the text
+    startText = startFont.render("Start", True, titleColor)
+    startText_center = startText.get_rect(center=(WIDTH/2, startButton.y))  # set the center point of the text
     instructionText = "To begin, hover your pointer finger over the Start button."
-    instructionObject = instructionFont.render(instructionText, True, titleColor)
-    instructionObject_center = instructionObject.get_rect(center=(WIDTH/2, HEIGHT/2))
+    instructionText = instructionFont.render(instructionText, True, titleColor)
+    instructionText_center = instructionText.get_rect(center=(WIDTH/2, HEIGHT/2))
 
     WINDOW.blit(mainBackground, (0, 0))
     # pygame.draw.rect(WINDOW, startButtonColor, startButton.buttonRect, 3)
     startButton.update(WINDOW, 5)
-    WINDOW.blit(titleObject, titleObject_center)  # blit text on screen
-    WINDOW.blit(startObject, startObject_center)  # blit text on screen
-    WINDOW.blit(instructionObject, instructionObject_center)
+    WINDOW.blit(titleText, titleText_center)  # blit text on screen
+    WINDOW.blit(startText, startText_center)  # blit text on screen
+    WINDOW.blit(instructionText, instructionText_center)
     # pygame.draw.rect()
 
+def endScreen():
+    endColor = (255,0,0)
+    endFont = pygame.font.Font("SPACE.ttf", 40)
+    mainFont = pygame.font.Font("SPACE.ttf", 20)
+    playFont = pygame.font.Font("SPACE.ttf", 20)
+
+    endText = endFont.render("You've Ninja-ed your last...", True, endColor)
+    endText_center = endText.get_rect(center=(WIDTH/2, HEIGHT/3))
+    mainText = mainFont.render("Main Menu", True, mainButtonColor)
+    mainText_center = mainText.get_rect(center=(mainButtDimensions))
+    playText = playFont.render("Play Again", True, playButtonColor)
+    playText_center = playText.get_rect(center=(playButtDimensions))
+
+    WINDOW.blit(endBackground, (0,0))   #display end background
+    WINDOW.blit(endText, endText_center)
+    #BUTTONS
+    mainButton.update(WINDOW, 5)
+    playButton.update(WINDOW, 5)
+    WINDOW.blit(mainText, mainText_center)
+    WINDOW.blit(playText, playText_center)
+
+    pass
 
 def flipCoin():
     return random.choice([True, False])
@@ -140,7 +176,6 @@ def showKnife(_handDetector, _handPoint):
     # pygame.draw.rect(WINDOW, cursorColor, cursorRect)   #DRAW RECTANGLE
     WINDOW.blit(knife, (cursorX, cursorY))
 
-
 #########
 # main function
 #########
@@ -151,6 +186,8 @@ def main():
     global cutPlanetList
     global health
     global healthObject
+    global score
+    global scoreObject
     global screenCase
 
     # make a hand detector
@@ -183,23 +220,22 @@ def main():
         if screenCase == 0:
             homeScreen()  # display eveything on the main screen
             if len(handDetector.landmarkDictionary) > 0:
-                showKnife(handDetector, handPoint)
-            #     # print(handDetector.landmarkDictionary[0])
-            #     # [first hand][hand point][x coordinate]
-            #     cursorX = (handDetector.landmarkDictionary[0][handPoint][0])
-            #     # [first hand][hand point][y coordinate]
-            #     cursorY = (handDetector.landmarkDictionary[0][handPoint][1])
+                # showKnife(handDetector, handPoint)
+                # print(handDetector.landmarkDictionary[0])
+                # [first hand][hand point][x coordinate]
+                cursorX = (handDetector.landmarkDictionary[0][handPoint][0])
+                # [first hand][hand point][y coordinate]
+                cursorY = (handDetector.landmarkDictionary[0][handPoint][1])
 
-            #     # mirror cursorX so it is not confusing
-            #     cursorX = WIDTH - mapToNewRange(cursorX, 0, handDetector.width, 0, WIDTH)
-            #     # map cursorY to pygame window size
-            #     cursorY = mapToNewRange(
-            #         cursorY, 0, handDetector.height, 0, HEIGHT)
+                # mirror cursorX so it is not confusing
+                cursorX = WIDTH - mapToNewRange(cursorX, 0, handDetector.width, 0, WIDTH)
+                # map cursorY to pygame window size
+                cursorY = mapToNewRange(cursorY, 0, handDetector.height, 0, HEIGHT)
 
-            #     # define hitbox at hand point
-            #     cursorRect = pygame.Rect(cursorX, cursorY, CURSORWIDTH, CURSORHEIGHT)
-            #     # pygame.draw.rect(WINDOW, cursorColor, cursorRect)   #DRAW RECTANGLE
-            #     WINDOW.blit(knife, (cursorX, cursorY))
+                # define hitbox at hand point
+                cursorRect = pygame.Rect(cursorX, cursorY, CURSORWIDTH, CURSORHEIGHT)
+                # pygame.draw.rect(WINDOW, cursorColor, cursorRect)   #DRAW RECTANGLE
+                WINDOW.blit(knife, (cursorX, cursorY))
 
                 # if hand icon
                 if startButton.buttonRect.colliderect(cursorRect):
@@ -228,6 +264,8 @@ def main():
                     else:
                         # spawn Planet in random spot in the middle thrid of the right side of the screen
                         planetList.append(Planet(0, random.randrange(int(HEIGHT/3), int(HEIGHT-(HEIGHT/3))), random.choice(planetAssets)))
+            else:
+                cursorRect = pygame.Rect(0,0,0,0)
 
         if screenCase == 1:
             ###################
@@ -237,6 +275,10 @@ def main():
             WINDOW.blit(gameBackground, (0, 0))
             # display health
             WINDOW.blit(healthObject, (0, 0))
+            # display score
+            scoreRect = scoreObject.get_rect()
+            scoreRect.right = WIDTH
+            WINDOW.blit(scoreObject, scoreRect)
 
             # if there is at least one hand seen, then
             # do all this code
@@ -258,10 +300,11 @@ def main():
                 # Track collision between hand point and PLANETS
                 ######################
                 # define hitbox at hand point
-                cursorRect = pygame.Rect(
-                    cursorX, cursorY, CURSORWIDTH, CURSORHEIGHT)
+                cursorRect = pygame.Rect(cursorX, cursorY, CURSORWIDTH, CURSORHEIGHT)
                 # pygame.draw.rect(WINDOW, cursorColor, cursorRect)   #DRAW RECTANGLE
                 WINDOW.blit(knife, (cursorX, cursorY))
+            else:
+                cursorRect = pygame.Rect(0,0,0,0)
 
             # FOR ALL CUT PLANETS
             for aCutPlanet in cutPlanetList:
@@ -279,8 +322,9 @@ def main():
                     cutPlanetList.append(aPlanet)
                     # remove the cut PLANET from the uncut PLANET list
                     planetList.remove(aPlanet)
-                    healthObject = healthFont.render(
-                        str(health), True, healthColor)  # display new health
+                    healthObject = healthFont.render(str(health), True, healthColor)  # display new health
+                    score += 1
+                    scoreObject = scoreFont.render(str(score), True, scoreColor)  # display new health
                     
                     coinFlip = flipCoin()
                     if coinFlip == True:
@@ -294,8 +338,7 @@ def main():
                 if aPlanet.y > HEIGHT:  # if uncut Planet falls below the screen
                     planetList.remove(aPlanet)  # remove from list
                     health -= 1  # remove one life
-                    healthObject = healthFont.render(
-                        str(health), True, healthColor)  # display new health
+                    healthObject = healthFont.render(str(health), True, healthColor)  # display new health
 
                     coinFlip = flipCoin()
                     if coinFlip == True:
@@ -309,13 +352,90 @@ def main():
                 # collide rectangle with rectangle
                 if aPlanet.planetRect.colliderect(cursorRect):
                     aPlanet.isCut = True
+
+            if health == 0:
+                screenCase = 2
+
+        if screenCase == 2:
+            ############
+            #END SCREEN
+            ############
+            for planet in planetList:
+                planetList.remove(planet)
+
+            endScreen()
+            if len(handDetector.landmarkDictionary) > 0:
+                # showKnife(handDetector, handPoint)
+                # print(handDetector.landmarkDictionary[0])
+                # [first hand][hand point][x coordinate]
+                cursorX = (handDetector.landmarkDictionary[0][handPoint][0])
+                # [first hand][hand point][y coordinate]
+                cursorY = (handDetector.landmarkDictionary[0][handPoint][1])
+
+                # mirror cursorX so it is not confusing
+                cursorX = WIDTH - mapToNewRange(cursorX, 0, handDetector.width, 0, WIDTH)
+                # map cursorY to pygame window size
+                cursorY = mapToNewRange(cursorY, 0, handDetector.height, 0, HEIGHT)
+
+                # define hitbox at hand point
+                cursorRect = pygame.Rect(cursorX, cursorY, CURSORWIDTH, CURSORHEIGHT)
+                # pygame.draw.rect(WINDOW, cursorColor, cursorRect)   #DRAW RECTANGLE
+                WINDOW.blit(knife, (cursorX, cursorY))
+
+                #PRESSING BUTTONS
+                #MAIN MENU BUTTON
+                if mainButton.buttonRect.colliderect(cursorRect):
+                    inMainButton = True
                 else:
-                    planetColor = (255, 0, 255)
-                # #collide rectangle with circle
-                # if cursorRect.collidepoint(aPlanet.x, aPlanet.y):
-                #     aPlanet.isCut = True
-                # else:
-                #     planetColor = (255,0,255)
+                    inMainButton = False
+
+                global updateMain
+                if inMainButton:
+                    if(updateMain):
+                        sec_in_mainButton = pygame.time.get_ticks()
+                        updateMain = False
+                else:
+                    sec_in_mainButton = pygame.time.get_ticks()
+                    updateMain = True
+
+                currentTime = pygame.time.get_ticks()
+
+                if currentTime - sec_in_mainButton > 2000:
+                    # print("stinky")
+                    screenCase = 0
+
+                #PLAY AGAIN BUTTON
+                if playButton.buttonRect.colliderect(cursorRect):
+                    inPlayButton = True
+                else:
+                    inPlayButton = False
+
+                global updatePlay
+                if inPlayButton:
+                    if(updatePlay):
+                        sec_in_playButton = pygame.time.get_ticks()
+                        updatePlay = False
+                else:
+                    sec_in_playButton = pygame.time.get_ticks()
+                    updatePlay = True
+
+                currentTime = pygame.time.get_ticks()
+
+                if currentTime - sec_in_playButton > 2000:
+                    # print("stinky")
+                    screenCase = 1
+                    score = 0
+                    health = 3
+                    coinFlip = flipCoin()
+                    if coinFlip == True:
+                        # spawn Planet in random spot in the middle thrid of the right side of the screen
+                        planetList.append(Planet(WIDTH, random.randrange(int(HEIGHT/3), int(HEIGHT-(HEIGHT/3))), random.choice(planetAssets)))
+                    else:
+                        # spawn Planet in random spot in the middle thrid of the right side of the screen
+                        planetList.append(Planet(0, random.randrange(int(HEIGHT/3), int(HEIGHT-(HEIGHT/3))), random.choice(planetAssets)))
+
+            else:
+                cursorRect = pygame.Rect(0,0,0,0)
 
         # for all the game events
         for event in pygame.event.get():
