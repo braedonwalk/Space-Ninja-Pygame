@@ -5,6 +5,7 @@
 import cv2
 import pygame
 import random
+import csv
 
 from HandDetector import HandDetector
 from Planet import Planet
@@ -156,6 +157,15 @@ playButton = Button(playButtonColor, WIDTH/3, textHeight, 75)
 updateMain = True
 updatePlay = True
 
+#MUSIC
+pygame.mixer.init()
+# load in sound files
+hitSoundArray = ["boom", "impact1", "impact2", "impact3"]
+
+
+#HIGH SCORE
+arrayHS = []
+
 ################
 # Function defs
 ################
@@ -247,6 +257,32 @@ def endScreen():
 
 def flipCoin():
     return random.choice([True, False])
+
+# def readCSV(file_, array_):
+#     with open(file_, 'r') as csvfile:
+#         #create a csv reader object
+#         csvreader = csv.reader(csvfile)
+
+#         #extract each data row one by one
+#         for row in csvreader:
+#             array_.append(row)
+
+#         return array_
+
+# def writeCSV(_file, _toWrite):
+#     with open(_file, 'r', newline='') as csvfile:
+#         csvWriter = csv.writer(csvfile)
+
+#         csvWriter.write(_toWrite)
+
+
+# def setHighScore(_score):
+#     readCSV("highScore.csv", arrayHS)
+#     # print(arrayHS)
+#     if arrayHS > _score:
+#         pass
+
+
 
 #########
 # main function
@@ -589,6 +625,10 @@ def main():
                 aPlanet.update(WINDOW)
                 aPlanet.move(coinFlip)  # MOVE UNCUT PLANET
                 if aPlanet.isCut == True:  # if the PLANET has been cut
+                    #play explosion sound effect
+                    explosionSound = pygame.mixer.Sound("Assets/Sound Effects/" + str(random.randrange(1,10)) + ".mp3")
+                    pygame.mixer.Sound.set_volume(explosionSound, 0.1)
+                    explosionSound.play()
                     # add PLANET to the cutPLANET list - remove planet from screen
                     cutPlanetList.append(aPlanet)
                     # remove the cut PLANET from the uncut PLANET list
