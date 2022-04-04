@@ -2,6 +2,7 @@
 # imports
 #############
 
+from winsound import PlaySound
 import cv2
 import pygame
 import random
@@ -160,8 +161,22 @@ updatePlay = True
 #MUSIC
 pygame.mixer.init()
 # load in sound files
-hitSoundArray = ["boom", "impact1", "impact2", "impact3"]
+missSound = pygame.mixer.Sound("Assets/Sound Effects/miss.mp3")
+knifeBlip = pygame.mixer.Sound("Assets/Sound Effects/knifeBlip.mp3")
+menuBlip = pygame.mixer.Sound("Assets/Sound Effects/menuBlip.mp3")
 
+pygame.mixer.Sound.set_volume(missSound, 0.1)
+pygame.mixer.Sound.set_volume(knifeBlip, 0.1)
+pygame.mixer.Sound.set_volume(menuBlip, 0.1)
+
+playBlip1 = True
+playBlip2 = True
+playBlip3 = True
+playBlip4 = True
+playBlip5 = True
+playBlip6 = True
+playBlip7 = True
+playBlip8 = True
 
 #HIGH SCORE
 arrayHS = []
@@ -364,6 +379,11 @@ def main():
 
                 if currentTime - sec_in_knifeButton1 > 2000:
                     chosenKnife = knifeList["Knife1"]
+                    if playBlip1:
+                        knifeBlip.play()
+                        playBlip1 = False
+                else:
+                    playBlip1 = True
                 #KNIFE 2
                 if knifeButton2.buttonRect.colliderect(cursorRect):
                     inKnifeButton2 = True
@@ -381,6 +401,11 @@ def main():
 
                 if currentTime - sec_in_knifeButton2 > 2000:
                     chosenKnife = knifeList["Knife2"]
+                    if playBlip2:
+                        knifeBlip.play()
+                        playBlip2 = False
+                else:
+                    playBlip2 = True
                 #KNIFE 3
                 if knifeButton3.buttonRect.colliderect(cursorRect):
                     inKnifeButton3 = True
@@ -398,6 +423,11 @@ def main():
 
                 if currentTime - sec_in_knifeButton3 > 2000:
                     chosenKnife = knifeList["Knife3"]
+                    if playBlip3:
+                        knifeBlip.play()
+                        playBlip3 = False
+                else:
+                    playBlip3 = True
                 #KNIFE 4
                 if knifeButton4.buttonRect.colliderect(cursorRect):
                     inKnifeButton4 = True
@@ -415,6 +445,12 @@ def main():
 
                 if currentTime - sec_in_knifeButton4 > 2000:
                     chosenKnife = knifeList["Knife4"]
+                    if playBlip4:
+                        knifeBlip.play()
+                        playBlip4 = False
+                    chosenKnife = knifeList["Knife4"]
+                else:
+                    playBlip4 = True
                 #KNIFE 5
                 if knifeButton5.buttonRect.colliderect(cursorRect):
                     inKnifeButton5 = True
@@ -432,6 +468,11 @@ def main():
 
                 if currentTime - sec_in_knifeButton5 > 2000:
                     chosenKnife = knifeList["Knife5"]
+                    if playBlip5:
+                        knifeBlip.play()
+                        playBlip5 = False
+                else: 
+                    playBlip5 = True
                 #KNIFE 6
                 if knifeButton6.buttonRect.colliderect(cursorRect):
                     inKnifeButton6 = True
@@ -449,6 +490,11 @@ def main():
 
                 if currentTime - sec_in_knifeButton6 > 2000:
                     chosenKnife = knifeList["Knife6"]
+                    if playBlip6:
+                        knifeBlip.play()
+                        playBlip6 = False
+                else:
+                    playBlip6 = True
                 #KNIFE 7
                 if knifeButton7.buttonRect.colliderect(cursorRect):
                     inKnifeButton7 = True
@@ -466,6 +512,11 @@ def main():
 
                 if currentTime - sec_in_knifeButton7 > 2000:
                     chosenKnife = knifeList["Knife7"]
+                    if playBlip7:
+                        knifeBlip.play()
+                        playBlip7 = False
+                else:
+                    playBlip7 = True
                 #KNIFE 8
                 if knifeButton8.buttonRect.colliderect(cursorRect):
                     inKnifeButton8 = True
@@ -483,6 +534,11 @@ def main():
 
                 if currentTime - sec_in_knifeButton8 > 2000:
                     chosenKnife = knifeList["Knife8"]
+                    if playBlip8:
+                        knifeBlip.play()
+                        playBlip8 = False
+                else: 
+                    playBlip8 = True
                 #BACK BUTTON
                 if backButton.buttonRect.colliderect(cursorRect):
                     inBackButton = True
@@ -500,6 +556,8 @@ def main():
 
                 if currentTime - sec_in_backButton > 2000:
                     screenCase = 0
+                    menuBlip.play()
+                        
 
                 knife = pygame.image.load("Assets/Knives/"+str(chosenKnife)+".png").convert_alpha()
                 knife = pygame.transform.rotate(knife, 90)
@@ -544,6 +602,7 @@ def main():
                     updateTime = True
 
                 if currentTime - sec_in_startButton > 2000:
+                    menuBlip.play()
                     screenCase = 1
                     coinFlip = flipCoin()
                     if coinFlip == True:
@@ -552,6 +611,7 @@ def main():
                     else:
                         # spawn Planet in random spot in the middle thrid of the right side of the screen
                         planetList.append(Planet(0, random.randrange(int(HEIGHT/3), int(HEIGHT-(HEIGHT/3))), random.choice(planetAssets)))
+
                 #KNIFE BUTTON
                 if knifeButton.buttonRect.colliderect(cursorRect):
                     inKnifeButton = True
@@ -568,6 +628,7 @@ def main():
                     updateKnifeTime = True
 
                 if currentTime - sec_in_knifeButton > 2000:
+                    menuBlip.play()
                     screenCase = -1
             else:
                 cursorRect = pygame.Rect(0,0,0,0)
@@ -645,6 +706,7 @@ def main():
                     
                     # print(cutFruitList)
                 if aPlanet.y > HEIGHT:  # if uncut Planet falls below the screen
+                    missSound.play()
                     planetList.remove(aPlanet)  # remove from list
                     health -= 1  # remove one life
                     healthObject = healthFont.render(str(health), True, healthColor)  # display new health
@@ -708,6 +770,7 @@ def main():
                     updateMain = True
 
                 if currentTime - sec_in_mainButton > 2000:
+                    menuBlip.play()
                     score = 0
                     health = 3
                     screenCase = 0
@@ -728,6 +791,7 @@ def main():
                     updatePlay = True
 
                 if currentTime - sec_in_playButton > 2000:
+                    menuBlip.play()
                     score = 0
                     health = 3
                     screenCase = 1
